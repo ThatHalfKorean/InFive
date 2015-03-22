@@ -56,7 +56,7 @@ public class Login extends ActionBarActivity {
             Log.i("facebook", "Logged in...");
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            
+
             Request.newMeRequest(session, new Request.GraphUserCallback()
             {
 

@@ -1,6 +1,8 @@
 package com.infive.infive;
 
 import android.app.Activity;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +21,8 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.facebook.Session;
 
 import java.net.URI;
@@ -33,6 +37,7 @@ public class MainActivity extends ActionBarActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private UpcomingEvents frag1;
     private UpcomingEvents frag2;
+    private LocationManager locationManager;
 
 
 
@@ -54,6 +59,15 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        GPSService mGPSService = new GPSService(this);
+        mGPSService.getLocation();
+
+        double latitude = mGPSService.getLatitude();
+        double longitude = mGPSService.getLongitude();
+        Toast.makeText(this, "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+
+        mGPSService.closeGPS();
     }
 
     @Override
