@@ -65,7 +65,9 @@ public class MainActivity extends ActionBarActivity
 
         double latitude = mGPSService.getLatitude();
         double longitude = mGPSService.getLongitude();
+//        double[] address = mGPSService.getGPSCoordinates("String Address");
         Toast.makeText(this, "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Address Latitude:" + address[0] + " | Address Longitude: " + address[1], Toast.LENGTH_LONG).show();
 
         mGPSService.closeGPS();
     }

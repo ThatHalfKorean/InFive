@@ -153,6 +153,23 @@ public class GPSService extends Service implements LocationListener {
         }
     }
 
+    public double[] getGPSCoordinates(String address){
+        Geocoder geocoder = new Geocoder(mContext);
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocationName(address, 1);
+            if(addresses.size() > 0) {
+                double latitude= addresses.get(0).getLatitude();
+                double longitude= addresses.get(0).getLongitude();
+                double[] gps = {latitude, longitude};
+                return gps;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * show settings to open GPS
      */
