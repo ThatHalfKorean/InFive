@@ -1,0 +1,23 @@
+{
+  "name": "InFive",
+  "version": "1.0.0",
+  "description": "API for inFive",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThatHalfKorean/InFive.git"
+  },
+  "author": "Geoffrey Kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThatHalfKorean/InFive/issues"
+  },
+  "homepage": "https://github.com/ThatHalfKorean/InFive",
+  "dependencies": {
+    "hapi": "^8.4.0",
+    "mongoose": "^4.0.1"
+  }
+}
