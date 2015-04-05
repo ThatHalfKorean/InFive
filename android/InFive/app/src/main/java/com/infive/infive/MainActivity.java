@@ -23,20 +23,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
-
 import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private UpcomingEvents frag1;
-    private UpcomingEvents frag2;
     private LocationManager locationManager;
 
 
@@ -84,6 +80,11 @@ public class MainActivity extends ActionBarActivity
         } else if (position == 1) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, UpcomingEvents.newInstance())
+                    .commit();
+        }
+        else if (position == 2) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, Friends.newInstance())
                     .commit();
         }
     }
