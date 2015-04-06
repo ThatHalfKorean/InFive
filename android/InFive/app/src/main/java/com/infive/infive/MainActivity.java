@@ -1,6 +1,7 @@
 package com.infive.infive;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -27,7 +28,7 @@ import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener,UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -125,6 +126,12 @@ public class MainActivity extends ActionBarActivity
         }
         return super.onCreateOptionsMenu(menu);
     }
+
+    public void openSearchActivity(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

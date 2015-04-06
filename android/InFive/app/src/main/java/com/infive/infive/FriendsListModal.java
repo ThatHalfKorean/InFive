@@ -1,24 +1,24 @@
 package com.infive.infive;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Friends.OnFragmentInteractionListener} interface
+ * {@link FriendsListModal.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Friends#newInstance} factory method to
+ * Use the {@link FriendsListModal#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Friends extends Fragment {
+public class FriendsListModal extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -36,17 +36,19 @@ public class Friends extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Friends.
+     * @return A new instance of fragment FriendsListModal.
      */
     // TODO: Rename and change types and number of parameters
-    public static Friends newInstance() {
-        Friends fragment = new Friends();
+    public static FriendsListModal newInstance(String param1, String param2) {
+        FriendsListModal fragment = new FriendsListModal();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public Friends() {
+    public FriendsListModal() {
         // Required empty public constructor
     }
 
@@ -63,7 +65,8 @@ public class Friends extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        getDialog().setTitle("Add Friends");
+        return inflater.inflate(R.layout.fragment_friends_list_modal, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -72,6 +75,7 @@ public class Friends extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

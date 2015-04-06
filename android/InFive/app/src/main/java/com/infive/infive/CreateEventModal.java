@@ -1,24 +1,26 @@
 package com.infive.infive;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.app.Fragment;
+import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
+import android.widget.Button;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Friends.OnFragmentInteractionListener} interface
+ * {@link CreateEventModal.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Friends#newInstance} factory method to
+ * Use the {@link CreateEventModal#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Friends extends Fragment {
+public class CreateEventModal extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -36,17 +38,19 @@ public class Friends extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Friends.
+     * @return A new instance of fragment CreateEventModal.
      */
     // TODO: Rename and change types and number of parameters
-    public static Friends newInstance() {
-        Friends fragment = new Friends();
+    public static CreateEventModal newInstance(String param1, String param2) {
+        CreateEventModal fragment = new CreateEventModal();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public Friends() {
+    public CreateEventModal() {
         // Required empty public constructor
     }
 
@@ -58,12 +62,31 @@ public class Friends extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        getDialog().setTitle("Create Event");
+        View rootview = inflater.inflate(R.layout.fragment_create_event_modal, container, false);
+
+        final Button button = (Button) rootview.findViewById(R.id.getFriendsListButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addFriends();
+                dismiss();
+            }
+        });
+        return rootview;
+
+    }
+
+    public void addFriends(){
+        FriendsListModal newFragment = new FriendsListModal();
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    public void dismissModal() {
+        this.dismiss();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -72,6 +95,7 @@ public class Friends extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

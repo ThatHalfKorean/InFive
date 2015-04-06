@@ -241,6 +241,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -248,7 +249,8 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Event Created.", Toast.LENGTH_SHORT).show();
+            CreateEventModal newFragment = new CreateEventModal();
+            newFragment.show(getFragmentManager(), "dialog");
             return true;
         }
 
