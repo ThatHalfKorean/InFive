@@ -1,4 +1,5 @@
 var Hapi = require('hapi'),
+	routes = require('./routes')
 	Config = require('./config'),
 	Mongoose = require('mongoose');
 
@@ -8,17 +9,13 @@ Mongoose.connect(mongo_url);
 // Create a server with a host and port
 var server = new Hapi.Server();
 server.connection({ 
-    host: 'localhost', 
-    port: 8000 
+    port: 7777 
 });
 
 // Add the route
-server.route({
-    method: 'GET',
-    path:'/hello', 
-    handler: function (request, reply) {
-       reply('hello world');
-    }
+server.route(routes);
+server.start(function () {
+  console.log("Server started on localhost:7777");
 });
 
 // Start the server

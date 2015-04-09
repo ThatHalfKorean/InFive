@@ -7,7 +7,6 @@ autoIncrement.initialize(mongoose);
 var userSchema = new Schema({
   id: String,
   username: {type: String, required: true },
-  name: {type: String, required: true },
   blocked: {type: [String], required: false },
   email: {type: String, required: false },
   password: {type: String, required: true },
