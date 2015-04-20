@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.widget.Toast;
 
 /**
  * Created by geoffkim on 3/21/15.
@@ -58,66 +59,66 @@ public class GPSService extends Service implements LocationListener {
      *
      * @return Location or null if no location is found
      */
-    public Location getLocation() {
-        try {
-
-            // Getting GPS status
-            isGPSEnabled = mLocationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // If GPS enabled, get latitude/longitude using GPS Services
-            if (isGPSEnabled) {
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, TIME, DISTANCE, this);
-                if (mLocationManager != null) {
-                    mLocation = mLocationManager
-                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (mLocation != null) {
-                        mLatitude = mLocation.getLatitude();
-                        mLongitude = mLocation.getLongitude();
-                        isLocationAvailable = true; // setting a flag that
-                        // location is available
-                        return mLocation;
-                    }
-                }
-            }
-
-            // If we are reaching this part, it means GPS was not able to fetch
-            // any location
-            // Getting network status
-            isNetworkEnabled = mLocationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, TIME, DISTANCE, this);
-                if (mLocationManager != null) {
-                    mLocation = mLocationManager
-                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (mLocation != null) {
-                        mLatitude = mLocation.getLatitude();
-                        mLongitude = mLocation.getLongitude();
-                        isLocationAvailable = true; // setting a flag that
-                        // location is available
-                        return mLocation;
-                    }
-                }
-            }
-            // If reaching here means, we were not able to get location neither
-            // from GPS not Network,
-            if (!isGPSEnabled) {
-                // so asking user to open GPS
-                askUserToOpenGPS();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // if reaching here means, location was not available, so setting the
-        // flag as false
-        isLocationAvailable = false;
-        return null;
-    }
+//    public Location getLocation() {
+//        try {
+//
+//            // Getting GPS status
+//            isGPSEnabled = mLocationManager
+//                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//            // If GPS enabled, get latitude/longitude using GPS Services
+//            if (isGPSEnabled) {
+//                mLocationManager.requestLocationUpdates(
+//                        LocationManager.GPS_PROVIDER, TIME, DISTANCE, this);
+//                if (mLocationManager != null) {
+//                    mLocation = mLocationManager
+//                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                    if (mLocation != null) {
+//                        mLatitude = mLocation.getLatitude();
+//                        mLongitude = mLocation.getLongitude();
+//                        isLocationAvailable = true; // setting a flag that
+//                        // location is available
+//                        return mLocation;
+//                    }
+//                }
+//            }
+//
+//            // If we are reaching this part, it means GPS was not able to fetch
+//            // any location
+//            // Getting network status
+//            isNetworkEnabled = mLocationManager
+//                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(
+//                        LocationManager.NETWORK_PROVIDER, TIME, DISTANCE, this);
+//                if (mLocationManager != null) {
+//                    mLocation = mLocationManager
+//                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//                    if (mLocation != null) {
+//                        mLatitude = mLocation.getLatitude();
+//                        mLongitude = mLocation.getLongitude();
+//                        isLocationAvailable = true; // setting a flag that
+//                        // location is available
+//                        return mLocation;
+//                    }
+//                }
+//            }
+//            // If reaching here means, we were not able to get location neither
+//            // from GPS not Network,
+//            if (!isGPSEnabled) {
+//                // so asking user to open GPS
+//                askUserToOpenGPS();
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        // if reaching here means, location was not available, so setting the
+//        // flag as false
+//        isLocationAvailable = false;
+//        return null;
+//    }
 
 
     /**
@@ -199,6 +200,7 @@ public class GPSService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
+        Toast.makeText(mContext, "Latitude:" + mLatitude + " | Longitude: " + mLongitude + " Speed:" +location.getSpeed(), Toast.LENGTH_LONG).show();
     }
 
     @Override

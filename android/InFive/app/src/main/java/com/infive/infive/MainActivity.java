@@ -24,6 +24,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URI;
 
 
@@ -34,7 +42,7 @@ public class MainActivity extends ActionBarActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private LocationManager locationManager;
+    Context context;
 
 
 
@@ -42,11 +50,14 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    LocationManager lm;
+    LocationListener mGPSService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.context = getApplicationContext();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -57,16 +68,18 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        GPSService mGPSService = new GPSService(this);
-        mGPSService.getLocation();
+        lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        mGPSService = new GPSService(this);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, mGPSService);
 
-        double latitude = mGPSService.getLatitude();
-        double longitude = mGPSService.getLongitude();
+//        mGPSService.getLocation();
+
+//        double latitude = mGPSService.getLatitude();
+//        double longitude = mGPSService.getLongitude();
 //        double[] address = mGPSService.getGPSCoordinates("String Address");
-        Toast.makeText(this, "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
 //        Toast.makeText(this, "Address Latitude:" + address[0] + " | Address Longitude: " + address[1], Toast.LENGTH_LONG).show();
 
-        mGPSService.closeGPS();
     }
 
     @Override
@@ -132,6 +145,49 @@ public class MainActivity extends ActionBarActivity
         startActivity(intent);
     }
 
+    public void logoutUser () {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String token = ApiHelper.getSessionToken(context);
+        client.addHeader("Authorization", token);
+
+        client.delete(this.getApplicationContext(), ApiHelper.getLocalUrlForApi(getResources())+"sessions",
+                new AsyncHttpResponseHandler() {
+
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                        Intent intent = new Intent(MainActivity.this.context, Login.class);
+                        startActivity(intent);
+                        finish();
+
+                        Toast toast = Toast.makeText(MainActivity.this.context, "Goodbye.", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                        String responseText = null;
+
+                        try {
+                            responseText = new JSONObject(new String(errorResponse)).getString("reason");
+                            Toast toast = Toast.makeText(getApplicationContext(), responseText, Toast.LENGTH_LONG);
+                            toast.show();
+                        } catch (JSONException j) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onRetry(int retryNo) {
+
+                    }
+                });
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,6 +198,11 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.action_logout) {
+            logoutUser();
+            lm.removeUpdates(mGPSService);
             return true;
         }
 
