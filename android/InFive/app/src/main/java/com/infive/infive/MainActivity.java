@@ -67,7 +67,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mGPSService = new GPSService(this);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, mGPSService);

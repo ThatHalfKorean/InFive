@@ -1,6 +1,8 @@
 package com.infive.infive;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
+import android.widget.ListView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +37,11 @@ public class Friends extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ListView friendList;
+    Context context;
+    ProgressDialog dialog;
+    FriendAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -52,6 +67,7 @@ public class Friends extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        this.context = getActivity().getApplicationContext();
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -62,8 +78,70 @@ public class Friends extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
+        getFriends(rootView);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        return rootView;
+    }
+
+    public void setFriendAdapter (FriendAdapter friendAdapter) {
+        this.adapter = friendAdapter;
+    }
+    public void getFriends(final View view) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String token = ApiHelper.getSessionToken(context);
+        RequestParams params = new RequestParams();
+
+        client.addHeader("Authorization", token);
+        client.get(context, ApiHelper.getLocalUrlForApi(getResources()) + "friends",
+                params, new AsyncHttpResponseHandler() {
+
+                    @Override
+                    public void onStart() {
+                        dialog = ProgressDialog.show(getActivity(), "",
+                                "Loading. Please wait...", true);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        String responseText = null;
+
+                        try {
+                            responseText = new JSONObject(new String(responseBody)).getString("response");
+                            JSONArray y = new JSONArray(responseText);
+                            Friend friend_data[] = new Friend[y.length()];
+
+                            for (int x = 0; x < y.length(); x++) {
+
+                                friend_data[x] = new Friend(y.get(x).toString());
+                            }
+
+                            final FriendAdapter adapter = new FriendAdapter(getActivity(),
+                                    R.layout.friend_item, friend_data);
+                            Friends.this.setFriendAdapter(adapter);
+                            friendList = (ListView) view.findViewById(R.id.friendsListView);
+                            friendList.setAdapter(adapter);
+
+                        } catch (JSONException j) {
+
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable error) {
+                        dialog.dismiss();
+                        String responseText = null;
+
+                        try {
+
+                            responseText = new JSONObject(new String(errorResponse)).getString("reason");
+                        } catch (JSONException j) {
+
+                        }
+
+                    }
+                });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
