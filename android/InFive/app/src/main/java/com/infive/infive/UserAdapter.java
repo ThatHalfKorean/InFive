@@ -9,21 +9,18 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Created by geoffkim on 4/20/15.
+ * Created by geoffkim on 4/26/15.
  */
-public class NotificationAdapter extends ArrayAdapter<Notification> {
+public class UserAdapter extends ArrayAdapter<User> {
     Context context;
     int layoutResourceId;
-    Notification[] data = null;
+    User[] data = null;
 
-    public NotificationAdapter(Context context, int layoutResourceId, Notification[] data) {
+    public UserAdapter(Context context, int layoutResourceId, User[] data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
-    }
-    public String processDate(String date){
-        return date.substring(date.lastIndexOf("T"));
     }
 
     @Override
@@ -37,27 +34,19 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
 
             holder = new FeedHolder();
             holder.txtTitle = (TextView) row.findViewById(R.id.txtTitle);
-            holder.txtDate = (TextView) row.findViewById(R.id.txtDate);
 
             row.setTag(holder);
         } else {
             holder = (FeedHolder) row.getTag();
         }
 
-        Notification feedItem = data[position];
-        try {
-            holder.txtTitle.setText(feedItem.msg.getString("author")+" is "+feedItem.msg.getString("content")+"!");
-            holder.txtDate.setText(feedItem.msg.getString("creationDate"));
-        } catch (Exception e){
-
-        }
+        User userItem = data[position];
+        holder.txtTitle.setText(userItem.msg);
 
         return row;
     }
 
     static class FeedHolder {
         TextView txtTitle;
-        TextView txtDate;
     }
 }
-
