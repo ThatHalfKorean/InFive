@@ -22,7 +22,8 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
         this.context = context;
         this.data = data;
     }
-    public String processDate(String date){
+
+    public String processDate(String date) {
         return date.substring(date.lastIndexOf("T"));
     }
 
@@ -46,9 +47,9 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
 
         Notification feedItem = data[position];
         try {
-            holder.txtTitle.setText(feedItem.msg.getString("author")+" is "+feedItem.msg.getString("content")+"!");
+            holder.txtTitle.setText(feedItem.msg.getString("author") + " is " + feedItem.msg.getString("content") + "!");
             holder.txtDate.setText(feedItem.msg.getString("creationDate"));
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 

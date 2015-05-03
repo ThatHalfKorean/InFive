@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +21,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 
 public class SearchActivity extends ActionBarActivity {
@@ -38,13 +42,12 @@ public class SearchActivity extends ActionBarActivity {
         setContentView(R.layout.activity_search);
     }
 
-
     public void getUsers(View view) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         //Static call to get token
         String token = ApiHelper.getSessionToken(context);
-        String searchInput = ((EditText)findViewById(R.id.search_bar)).getText().toString();
+        String searchInput = ((EditText) findViewById(R.id.search_bar)).getText().toString();
 
         client.addHeader("Authorization", token);
         client.addHeader("Search", searchInput);
@@ -86,8 +89,8 @@ public class SearchActivity extends ActionBarActivity {
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable error) {
                 dialog.dismiss();
                 String responseText = null;
-                try{
-                        responseText = new JSONObject(new String(errorResponse)).getString("reason");
+                try {
+                    responseText = new JSONObject(new String(errorResponse)).getString("reason");
 
                 } catch (JSONException j) {
 
@@ -104,12 +107,12 @@ public class SearchActivity extends ActionBarActivity {
         return true;
     }
 
-    public void logoutUser () {
+    public void logoutUser() {
         AsyncHttpClient client = new AsyncHttpClient();
         String token = ApiHelper.getSessionToken(context);
         client.addHeader("Authorization", token);
 
-        client.delete(this.getApplicationContext(), ApiHelper.getLocalUrlForApi(getResources())+"sessions",
+        client.delete(this.getApplicationContext(), ApiHelper.getLocalUrlForApi(getResources()) + "sessions",
                 new AsyncHttpResponseHandler() {
 
                     @Override

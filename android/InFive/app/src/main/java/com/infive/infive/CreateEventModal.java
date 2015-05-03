@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -31,6 +32,7 @@ public class CreateEventModal extends DialogFragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    View root;
 
     /**
      * Use this factory method to create a new instance of
@@ -62,6 +64,7 @@ public class CreateEventModal extends DialogFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,15 +76,31 @@ public class CreateEventModal extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addFriends();
-                dismiss();
+                dismissModal();
             }
         });
+        root = rootview;
         return rootview;
 
     }
 
-    public void addFriends(){
+    public void addFriends() {
+        EditText eventTitle = (EditText) root.findViewById(R.id.eventName);
+        EditText address = (EditText) root.findViewById(R.id.address);
+        EditText city = (EditText) root.findViewById(R.id.city);
+        EditText state = (EditText) root.findViewById(R.id.state);
+        EditText zip = (EditText) root.findViewById(R.id.zip);
+        EditText date = (EditText) root.findViewById(R.id.date);
+
+        Bundle args = new Bundle();
+        String eventName = eventTitle.getText().toString();
+        String fullAddress = address.getText().toString() + ", " + city.getText().toString() + ", " + state.getText().toString() + ", " + zip.getText().toString();
+        String dateTime = date.getText().toString();
+        args.putString("event", eventName);
+        args.putString("location", fullAddress);
+        args.putString("when", dateTime);
         FriendsListModal newFragment = new FriendsListModal();
+        newFragment.setArguments(args);
         newFragment.show(getFragmentManager(), "dialog");
     }
 

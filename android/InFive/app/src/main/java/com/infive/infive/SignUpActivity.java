@@ -50,7 +50,6 @@ public class SignUpActivity extends ActionBarActivity {
         });
 
 
-
         //Get handle, email, password, and confirm fields
         mUsername = (EditText) findViewById(R.id.username);
         mEmail = (EditText) findViewById(R.id.email);
@@ -65,7 +64,7 @@ public class SignUpActivity extends ActionBarActivity {
         finish();
     }
 
-    public JSONObject getUserObjectRequestAsJson () {
+    public JSONObject getUserObjectRequestAsJson() {
         JSONObject jsonParams = new JSONObject();
 
         try {
@@ -79,7 +78,7 @@ public class SignUpActivity extends ActionBarActivity {
         return jsonParams;
     }
 
-    public StringEntity convertJsonUserToStringEntity (JSONObject jsonParams) {
+    public StringEntity convertJsonUserToStringEntity(JSONObject jsonParams) {
         StringEntity entity = null;
 
         try {
@@ -94,7 +93,7 @@ public class SignUpActivity extends ActionBarActivity {
     public void attemptCreateAccount() {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.post(context, ApiHelper.getLocalUrlForApi(getResources())+"signup",
+        client.post(context, ApiHelper.getLocalUrlForApi(getResources()) + "signup",
                 convertJsonUserToStringEntity(getUserObjectRequestAsJson()), "application/json",
                 new AsyncHttpResponseHandler() {
 
@@ -127,9 +126,9 @@ public class SignUpActivity extends ActionBarActivity {
                         String responseText = null;
 
                         try {
-                                responseText = new JSONObject(new String(errorResponse)).getString("reason");
-                                Toast toast = Toast.makeText(getApplicationContext(), responseText, Toast.LENGTH_LONG);
-                                toast.show();
+                            responseText = new JSONObject(new String(errorResponse)).getString("reason");
+                            Toast toast = Toast.makeText(getApplicationContext(), responseText, Toast.LENGTH_LONG);
+                            toast.show();
 //                            }
                         } catch (JSONException j) {
 
@@ -144,7 +143,7 @@ public class SignUpActivity extends ActionBarActivity {
                 });
     }
 
-    public void signupButtonClicked (View view) {
+    public void signupButtonClicked(View view) {
         attemptCreateAccount();
     }
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 /**
  * Created by geoffkim on 4/25/15.
  */
-public class FriendAdapter extends ArrayAdapter<Friend>{
+public class FriendAdapter extends ArrayAdapter<Friend> {
     Context context;
     int layoutResourceId;
     Friend[] data = null;

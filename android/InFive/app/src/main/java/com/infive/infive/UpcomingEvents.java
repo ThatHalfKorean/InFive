@@ -86,9 +86,10 @@ public class UpcomingEvents extends Fragment {
         return rootView;
     }
 
-    public void setEventAdapter (EventAdapter eventAdapter) {
+    public void setEventAdapter(EventAdapter eventAdapter) {
         this.adapter = eventAdapter;
     }
+
     public void getEvents(final View view) {
         AsyncHttpClient client = new AsyncHttpClient();
         String token = ApiHelper.getSessionToken(context);

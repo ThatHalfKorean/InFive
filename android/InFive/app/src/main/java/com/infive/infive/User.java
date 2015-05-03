@@ -6,7 +6,8 @@ package com.infive.infive;
 public class User {
 
     public String msg;
-    public User(){
+
+    public User() {
         super();
     }
 

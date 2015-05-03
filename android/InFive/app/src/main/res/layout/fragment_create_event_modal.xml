@@ -39,14 +39,22 @@
         android:hint="Zip"
         android:layout_below="@id/state"
         android:inputType="text" />
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date and Time"
+        android:layout_below="@id/zip"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/getFriendsListButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create"
-        android:layout_below="@+id/zip"
+        android:layout_below="@+id/date"
         android:layout_alignRight="@+id/zip"
         android:layout_alignEnd="@+id/zip" />
+
 
 </RelativeLayout>

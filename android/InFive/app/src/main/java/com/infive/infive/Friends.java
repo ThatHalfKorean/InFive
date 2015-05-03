@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,9 +85,10 @@ public class Friends extends Fragment {
         return rootView;
     }
 
-    public void setFriendAdapter (FriendAdapter friendAdapter) {
+    public void setFriendAdapter(FriendAdapter friendAdapter) {
         this.adapter = friendAdapter;
     }
+
     public void getFriends(final View view) {
         AsyncHttpClient client = new AsyncHttpClient();
         String token = ApiHelper.getSessionToken(context);
@@ -150,6 +152,7 @@ public class Friends extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

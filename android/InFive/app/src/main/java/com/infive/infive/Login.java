@@ -41,12 +41,12 @@ public class Login extends ActionBarActivity {
                 signUpButton.setTextColor(Color.parseColor("#4cc1ff"));
                 showSignUp();
             }
-    });
+        });
         mUsername = (EditText) findViewById(R.id.username);
         mPassword = (EditText) findViewById(R.id.password);
     }
 
-    public JSONObject getUserObjectRequestAsJson () {
+    public JSONObject getUserObjectRequestAsJson() {
         JSONObject jsonParams = new JSONObject();
 
         try {
@@ -58,7 +58,7 @@ public class Login extends ActionBarActivity {
         return jsonParams;
     }
 
-    public StringEntity convertJsonUserToStringEntity (JSONObject jsonParams) {
+    public StringEntity convertJsonUserToStringEntity(JSONObject jsonParams) {
         StringEntity entity = null;
 
         try {
@@ -73,7 +73,7 @@ public class Login extends ActionBarActivity {
     public void attemptLogin() {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.post(context, ApiHelper.getLocalUrlForApi(getResources())+"sessions",
+        client.post(context, ApiHelper.getLocalUrlForApi(getResources()) + "sessions",
                 convertJsonUserToStringEntity(getUserObjectRequestAsJson()), "application/json",
                 new AsyncHttpResponseHandler() {
 
@@ -94,7 +94,7 @@ public class Login extends ActionBarActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                            try {
+                        try {
                             responseText = new JSONObject(new String(response)).getString("response");
                             Toast toast = Toast.makeText(Login.this.context, responseText, Toast.LENGTH_LONG);
                             toast.show();
@@ -135,7 +135,7 @@ public class Login extends ActionBarActivity {
                 });
     }
 
-    public void showSignUp (){
+    public void showSignUp() {
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
         finish();

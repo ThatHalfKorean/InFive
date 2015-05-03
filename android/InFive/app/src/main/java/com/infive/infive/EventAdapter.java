@@ -11,7 +11,7 @@ import android.widget.TextView;
 /**
  * Created by geoffkim on 4/26/15.
  */
-public class EventAdapter extends ArrayAdapter<Event>{
+public class EventAdapter extends ArrayAdapter<Event> {
     Context context;
     int layoutResourceId;
     Event[] data = null;
@@ -49,7 +49,7 @@ public class EventAdapter extends ArrayAdapter<Event>{
             holder.txtHost.setText(feedItem.msg.getString("host"));
             holder.txtAddress.setText(feedItem.msg.getString("address"));
             holder.txtDate.setText(feedItem.msg.getString("eventDate"));
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 

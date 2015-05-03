@@ -36,14 +36,13 @@ import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener,UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     Context context;
-
 
 
     /**
@@ -67,7 +66,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mGPSService = new GPSService(this);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, mGPSService);
 
@@ -94,8 +93,7 @@ public class MainActivity extends ActionBarActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.container, UpcomingEvents.newInstance())
                     .commit();
-        }
-        else if (position == 2) {
+        } else if (position == 2) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, Friends.newInstance())
                     .commit();
@@ -103,7 +101,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(Uri uri) {
 
     }
 
@@ -144,12 +142,12 @@ public class MainActivity extends ActionBarActivity
         startActivity(intent);
     }
 
-    public void logoutUser () {
+    public void logoutUser() {
         AsyncHttpClient client = new AsyncHttpClient();
         String token = ApiHelper.getSessionToken(context);
         client.addHeader("Authorization", token);
 
-        client.delete(this.getApplicationContext(), ApiHelper.getLocalUrlForApi(getResources())+"sessions",
+        client.delete(this.getApplicationContext(), ApiHelper.getLocalUrlForApi(getResources()) + "sessions",
                 new AsyncHttpResponseHandler() {
 
                     @Override

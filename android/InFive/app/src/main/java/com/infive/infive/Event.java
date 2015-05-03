@@ -7,7 +7,8 @@ import org.json.JSONObject;
  */
 public class Event {
     public JSONObject msg;
-    public Event(){
+
+    public Event() {
         super();
     }
 

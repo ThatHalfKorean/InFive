@@ -7,7 +7,8 @@ import org.json.JSONObject;
  */
 public class Friend {
     public String msg;
-    public Friend(){
+
+    public Friend() {
         super();
     }
 

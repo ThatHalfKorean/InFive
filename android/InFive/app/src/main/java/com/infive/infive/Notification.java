@@ -1,4 +1,5 @@
 package com.infive.infive;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,13 +8,14 @@ import org.json.JSONObject;
  */
 public class Notification {
 
-        public JSONObject msg;
-        public Notification(){
-            super();
-        }
+    public JSONObject msg;
 
-        public Notification(JSONObject msg) {
-            super();
-            this.msg = msg;
-        }
+    public Notification() {
+        super();
+    }
+
+    public Notification(JSONObject msg) {
+        super();
+        this.msg = msg;
+    }
 }

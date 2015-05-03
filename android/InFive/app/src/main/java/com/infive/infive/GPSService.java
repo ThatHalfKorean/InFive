@@ -154,14 +154,14 @@ public class GPSService extends Service implements LocationListener {
         }
     }
 
-    public double[] getGPSCoordinates(String address){
+    public double[] getGPSCoordinates(String address) {
         Geocoder geocoder = new Geocoder(mContext);
         List<Address> addresses;
         try {
             addresses = geocoder.getFromLocationName(address, 1);
-            if(addresses.size() > 0) {
-                double latitude= addresses.get(0).getLatitude();
-                double longitude= addresses.get(0).getLongitude();
+            if (addresses.size() > 0) {
+                double latitude = addresses.get(0).getLatitude();
+                double longitude = addresses.get(0).getLongitude();
                 double[] gps = {latitude, longitude};
                 return gps;
             }
@@ -186,7 +186,7 @@ public class GPSService extends Service implements LocationListener {
                         mContext.startActivity(intent);
                     }
                 })
-                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
@@ -200,7 +200,7 @@ public class GPSService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
-        Toast.makeText(mContext, "Latitude:" + mLatitude + " | Longitude: " + mLongitude + " Speed:" +location.getSpeed(), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Latitude:" + mLatitude + " | Longitude: " + mLongitude + " Speed:" + location.getSpeed(), Toast.LENGTH_LONG).show();
     }
 
     @Override

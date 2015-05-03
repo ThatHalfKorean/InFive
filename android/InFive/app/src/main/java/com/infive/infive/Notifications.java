@@ -87,9 +87,10 @@ public class Notifications extends Fragment {
     }
 
 
-    public void setNotificationAdapter (NotificationAdapter notificationAdapter) {
+    public void setNotificationAdapter(NotificationAdapter notificationAdapter) {
         this.adapter = notificationAdapter;
     }
+
     public void getNotifications(final View view) {
         AsyncHttpClient client = new AsyncHttpClient();
         String token = ApiHelper.getSessionToken(context);
