@@ -15,4 +15,8 @@ public class User {
         super();
         this.msg = msg;
     }
+
+    public String getUser(){
+        return this.msg;
+    }
 }

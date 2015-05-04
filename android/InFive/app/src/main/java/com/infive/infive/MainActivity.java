@@ -36,7 +36,7 @@ import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, StartJourneyModal.OnFragmentInteractionListener, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, StartJourneyModal.OnFragmentInteractionListener, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.

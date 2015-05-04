@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends ActionBarActivity{
 
     private ListView userList;
     Context context;
@@ -78,6 +78,19 @@ public class SearchActivity extends ActionBarActivity {
                             R.layout.user_item, user_data);
                     userList = (ListView) findViewById(R.id.searchList);
                     userList.setAdapter(adapter);
+
+                    userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                                long id) {
+                            Bundle args = new Bundle();
+                                args.putString("friend",adapter.getItem(position).getUser());
+                            AddFriendModal newFragment = new AddFriendModal();
+                            newFragment.setArguments(args);
+                            newFragment.show(getSupportFragmentManager(), "dialog");
+                        }
+                    });
+
 
                 } catch (JSONException j) {
 
