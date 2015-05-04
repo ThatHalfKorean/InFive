@@ -1,10 +1,12 @@
 package com.infive.infive;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +20,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by geoffkim on 3/21/15.
@@ -38,6 +49,8 @@ public class GPSService extends Service implements LocationListener {
     Location mLocation;
     double mLatitude;
     double mLongitude;
+    double nLatitude;
+    double nLongitude;
 
     // Minimum time fluctuation for next update (in milliseconds)
     private static final long TIME = 30000;
@@ -53,73 +66,6 @@ public class GPSService extends Service implements LocationListener {
                 .getSystemService(LOCATION_SERVICE);
 
     }
-
-    /**
-     * Returs the Location
-     *
-     * @return Location or null if no location is found
-     */
-//    public Location getLocation() {
-//        try {
-//
-//            // Getting GPS status
-//            isGPSEnabled = mLocationManager
-//                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-//
-//            // If GPS enabled, get latitude/longitude using GPS Services
-//            if (isGPSEnabled) {
-//                mLocationManager.requestLocationUpdates(
-//                        LocationManager.GPS_PROVIDER, TIME, DISTANCE, this);
-//                if (mLocationManager != null) {
-//                    mLocation = mLocationManager
-//                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                    if (mLocation != null) {
-//                        mLatitude = mLocation.getLatitude();
-//                        mLongitude = mLocation.getLongitude();
-//                        isLocationAvailable = true; // setting a flag that
-//                        // location is available
-//                        return mLocation;
-//                    }
-//                }
-//            }
-//
-//            // If we are reaching this part, it means GPS was not able to fetch
-//            // any location
-//            // Getting network status
-//            isNetworkEnabled = mLocationManager
-//                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(
-//                        LocationManager.NETWORK_PROVIDER, TIME, DISTANCE, this);
-//                if (mLocationManager != null) {
-//                    mLocation = mLocationManager
-//                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//                    if (mLocation != null) {
-//                        mLatitude = mLocation.getLatitude();
-//                        mLongitude = mLocation.getLongitude();
-//                        isLocationAvailable = true; // setting a flag that
-//                        // location is available
-//                        return mLocation;
-//                    }
-//                }
-//            }
-//            // If reaching here means, we were not able to get location neither
-//            // from GPS not Network,
-//            if (!isGPSEnabled) {
-//                // so asking user to open GPS
-//                askUserToOpenGPS();
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        // if reaching here means, location was not available, so setting the
-//        // flag as false
-//        isLocationAvailable = false;
-//        return null;
-//    }
-
 
     /**
      * get latitude
@@ -154,21 +100,19 @@ public class GPSService extends Service implements LocationListener {
         }
     }
 
-    public double[] getGPSCoordinates(String address) {
+    public void getGPSCoordinates(String address) {
         Geocoder geocoder = new Geocoder(mContext);
         List<Address> addresses;
         try {
             addresses = geocoder.getFromLocationName(address, 1);
             if (addresses.size() > 0) {
-                double latitude = addresses.get(0).getLatitude();
-                double longitude = addresses.get(0).getLongitude();
-                double[] gps = {latitude, longitude};
-                return gps;
+                nLatitude = addresses.get(0).getLatitude();
+                nLongitude = addresses.get(0).getLongitude();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+
     }
 
     /**
@@ -193,6 +137,95 @@ public class GPSService extends Service implements LocationListener {
                 }).show();
     }
 
+    private double distance(double lat1, double lat2, double lon1, double lon2) {
+
+        final int R = 6371; // Radius of the earth
+
+        Double latDistance = deg2rad(lat2 - lat1);
+        Double lonDistance = deg2rad(lon2 - lon1);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        return distance;
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    public JSONObject getMessageObjectRequestAsJson(String content) {
+        JSONObject jsonParams = new JSONObject();
+        JSONArray recipients = new JSONArray();
+        recipients.put(notificationData.getHost());
+
+        try {
+            jsonParams.put("content", content);
+            jsonParams.put("recipients",recipients);
+            jsonParams.put("Authorization", ApiHelper.getSessionToken(mContext));
+
+        } catch (JSONException j) {
+
+        }
+
+        return jsonParams;
+    }
+
+    public StringEntity convertJsonUserToStringEntity(JSONObject jsonParams) {
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonParams.toString());
+        } catch (UnsupportedEncodingException i) {
+            System.out.println(i);
+        }
+
+        return entity;
+    }
+
+    public void postFive() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(mContext, ApiHelper.getLocalUrlForApi(mContext.getResources()) + "notifications",
+                convertJsonUserToStringEntity(getMessageObjectRequestAsJson("gonna be there inFive!")), "application/json",
+                new AsyncHttpResponseHandler() {
+
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                        String responseText = null;
+                        try {
+                            responseText = new JSONObject(new String(response)).getString("response");
+                            Toast.makeText(mContext, "inFive", Toast.LENGTH_LONG).show();
+                            closeGPS();
+                        } catch (JSONException j) {
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                        String responseText = null;
+
+                        try {
+                            responseText = new JSONObject(new String(errorResponse)).getString("reason");
+
+                        } catch (JSONException j) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onRetry(int retryNo) {
+
+                    }
+                });
+    }
     /**
      * Updating the location when location changes
      */
@@ -200,7 +233,10 @@ public class GPSService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
-        Toast.makeText(mContext, "Latitude:" + mLatitude + " | Longitude: " + mLongitude + " Speed:" + location.getSpeed(), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Latitude:" + mLatitude + " | Longitude: " + mLongitude + " Speed:" + location.getSpeed()*60*5 +" distance:" + distance(mLatitude, nLatitude, mLongitude, nLongitude), Toast.LENGTH_LONG).show();
+        if(location.getSpeed()*60*5 >= distance(mLatitude, nLatitude, mLongitude, nLongitude)){
+            postFive();
+        }
     }
 
     @Override

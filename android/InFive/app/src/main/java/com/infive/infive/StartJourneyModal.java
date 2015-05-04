@@ -3,35 +3,38 @@ package com.infive.infive;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link UpcomingEvents.OnFragmentInteractionListener} interface
+ * {@link StartJourneyModal.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link UpcomingEvents#newInstance} factory method to
+ * Use the {@link StartJourneyModal#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UpcomingEvents extends Fragment {
+public class StartJourneyModal extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,11 +43,15 @@ public class UpcomingEvents extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private ListView eventList;
+    private String title;
+    private String host;
+    private String address;
+    private String date;
     Context context;
     ProgressDialog dialog;
-    EventAdapter adapter;
+    LocationManager lm;
+    GPSService mGPSService;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,24 +61,33 @@ public class UpcomingEvents extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UpcomingEvents.
+     * @return A new instance of fragment StartJourneyModal.
      */
     // TODO: Rename and change types and number of parameters
-    public static UpcomingEvents newInstance() {
-        UpcomingEvents fragment = new UpcomingEvents();
+    public static StartJourneyModal newInstance(String param1, String param2) {
+        StartJourneyModal fragment = new StartJourneyModal();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public UpcomingEvents() {
+    public StartJourneyModal() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.context = getActivity().getApplicationContext();
         super.onCreate(savedInstanceState);
+        Bundle mArgs = getArguments();
+        title = mArgs.getString("eventTitle");
+        host = mArgs.getString("host");
+        date = mArgs.getString("eventDate");
+        address = mArgs.getString("address");
+        this.context = getActivity().getApplicationContext();
+
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -81,25 +97,64 @@ public class UpcomingEvents extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_upcoming_events, container, false);
-        getEvents(rootView);
+        View rootView = inflater.inflate(R.layout.fragment_start_journey_modal, container, false);
+        getDialog().setTitle(title);
+        TextView jHost = (TextView) rootView.findViewById(R.id.journeyHost);
+        TextView jAddress = (TextView) rootView.findViewById(R.id.journeyAddress);
+        TextView jTime = (TextView) rootView.findViewById(R.id.journeyTime);
+        jHost.setText(host);
+        notificationData.setHost(host);
+        jAddress.setText(address);
+        jTime.setText(date);
+        final Button button = (Button) rootView.findViewById(R.id.startJourney);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startJourney();
+                dismissModal();
+            }
+        });
         // Inflate the layout for this fragment
         return rootView;
     }
 
-    public void setEventAdapter(EventAdapter eventAdapter) {
-        this.adapter = eventAdapter;
+    public JSONObject getMessageObjectRequestAsJson(String content) {
+        JSONObject jsonParams = new JSONObject();
+        JSONArray recipients = new JSONArray();
+        recipients.put(host);
+
+        try {
+            jsonParams.put("content", content);
+            jsonParams.put("recipients",recipients);
+            jsonParams.put("Authorization", ApiHelper.getSessionToken(context));
+
+        } catch (JSONException j) {
+
+        }
+
+        return jsonParams;
     }
 
-    public void getEvents(final View view) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        String token = ApiHelper.getSessionToken(context);
-        RequestParams params = new RequestParams();
+    public StringEntity convertJsonUserToStringEntity(JSONObject jsonParams) {
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(jsonParams.toString());
+        } catch (UnsupportedEncodingException i) {
+            System.out.println(i);
+        }
 
-        client.addHeader("Authorization", token);
-        client.get(context, ApiHelper.getLocalUrlForApi(getResources()) + "eventsFeed",
-                params, new AsyncHttpResponseHandler() {
+        return entity;
+    }
+
+    public void startJourney(){
+        lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        mGPSService = new GPSService(context);
+        mGPSService.getGPSCoordinates(address);
+
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, mGPSService);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(context, ApiHelper.getLocalUrlForApi(getResources()) + "notifications",
+                convertJsonUserToStringEntity(getMessageObjectRequestAsJson("is on the way!")), "application/json",
+                new AsyncHttpResponseHandler() {
 
                     @Override
                     public void onStart() {
@@ -108,64 +163,42 @@ public class UpcomingEvents extends Fragment {
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                         String responseText = null;
-
                         try {
-                            responseText = new JSONObject(new String(responseBody)).getString("response");
-                            JSONArray y = new JSONArray(responseText);
-                            Event event_data[] = new Event[y.length()];
-
-                            for (int x = 0; x < y.length(); x++) {
-
-                                event_data[x] = new Event(new JSONObject(y.get(x).toString()));
-                            }
-
-                            final EventAdapter adapter = new EventAdapter(getActivity(),
-                                    R.layout.event_item, event_data);
-                            UpcomingEvents.this.setEventAdapter(adapter);
-                            eventList = (ListView) view.findViewById(R.id.upcomingEventsListView);
-                            eventList.setAdapter(adapter);
-
-                            eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position,
-                                                        long id) {
-                                    Bundle args = new Bundle();
-                                    try {
-                                        args.putString("host",adapter.getItem(position).getEventObj().getString("host"));
-                                        args.putString("address",adapter.getItem(position).getEventObj().getString("address"));
-                                        args.putString("eventDate",adapter.getItem(position).getEventObj().getString("eventDate"));
-                                        args.putString("eventTitle",adapter.getItem(position).getEventObj().getString("eventTitle"));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    StartJourneyModal newFragment = new StartJourneyModal();
-                                    newFragment.setArguments(args);
-                                    newFragment.show(getFragmentManager(), "dialog");
-                                }
-                            });
-
+                            responseText = new JSONObject(new String(response)).getString("response");
                         } catch (JSONException j) {
 
                         }
+
+                        dismissModal();
                         dialog.dismiss();
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable error) {
+                    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                         dialog.dismiss();
                         String responseText = null;
 
                         try {
-
                             responseText = new JSONObject(new String(errorResponse)).getString("reason");
+
                         } catch (JSONException j) {
 
                         }
+                        dismissModal();
+                    }
+
+                    @Override
+                    public void onRetry(int retryNo) {
 
                     }
                 });
+
+    }
+
+    public void dismissModal() {
+        this.dismiss();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

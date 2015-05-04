@@ -36,7 +36,7 @@ import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, StartJourneyModal.OnFragmentInteractionListener, CreateEventModal.OnFragmentInteractionListener, FriendsListModal.OnFragmentInteractionListener, UpcomingEvents.OnFragmentInteractionListener, Notifications.OnFragmentInteractionListener, Friends.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -49,8 +49,6 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    LocationManager lm;
-    LocationListener mGPSService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,17 +64,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mGPSService = new GPSService(this);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, mGPSService);
 
-//        mGPSService.getLocation();
-
-//        double latitude = mGPSService.getLatitude();
-//        double longitude = mGPSService.getLongitude();
-//        double[] address = mGPSService.getGPSCoordinates("String Address");
-//        Toast.makeText(this, "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
-//        Toast.makeText(this, "Address Latitude:" + address[0] + " | Address Longitude: " + address[1], Toast.LENGTH_LONG).show();
 
     }
 
@@ -199,7 +187,6 @@ public class MainActivity extends ActionBarActivity
         }
         if (id == R.id.action_logout) {
             logoutUser();
-            lm.removeUpdates(mGPSService);
             return true;
         }
 

@@ -16,4 +16,8 @@ public class Event {
         super();
         this.msg = msg;
     }
+
+    public JSONObject getEventObj(){
+        return this.msg;
+    }
 }
