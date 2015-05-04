@@ -60,8 +60,13 @@ var notificationFuncs = {
             var viewableNotifications = [];
             var index = 0;
             notifications.forEach(function (notification) {
-              viewableNotifications[index] = notification;
-              index++;
+
+              var currentTime = new Date().getTime();
+              var notificationDateInMillis = new Date(notification.creationDate).getTime();
+              if((notificationDateInMillis + 43200000) >= currentTime){
+                viewableNotifications[index] = notification;
+                index++;
+              }
             });
             var sortedNotifications = viewableNotifications.sort(function (a, b) {
               var dateA = a.creationDate.getTime(),

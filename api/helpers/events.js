@@ -61,8 +61,12 @@ var eventFuncs = {
             var viewableEvents = [];
             var index = 0;
             events.forEach(function (inevent) {
-              viewableEvents[index] = inevent;
-              index++;
+              var currentTime = new Date().getTime();
+              var eventDateInMillis = new Date(inevent.eventDate).getTime();
+              if((eventDateInMillis + 43200000) >= currentTime){
+                viewableEvents[index] = inevent;
+                index++;
+              }
             });
             var sortedEvents = viewableEvents.sort(function (a, b) {
               var dateA = a.eventDate.getTime(),
