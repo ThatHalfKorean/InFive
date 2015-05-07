@@ -36,23 +36,58 @@
         android:id="@+id/zip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:inputType="date"
         android:hint="Zip"
-        android:layout_below="@id/state"
-        android:inputType="text" />
+        android:layout_below="@id/state" />
     <EditText
-        android:id="@+id/date"
-        android:layout_width="fill_parent"
+        android:id="@+id/month"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Date and Time"
+        android:hint="Month"
         android:layout_below="@id/zip"
-        android:inputType="text" />
-
+        android:inputType="date" />
+    <EditText
+        android:id="@+id/day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Day"
+        android:layout_below="@id/zip"
+        android:layout_toRightOf="@id/month"
+        android:layout_toEndOf="@id/month"
+        android:inputType="date" />
+    <EditText
+        android:id="@+id/year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Year"
+        android:layout_below="@id/zip"
+        android:layout_toRightOf="@id/day"
+        android:layout_toEndOf="@id/day"
+        android:inputType="date" />
+    <EditText
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Hour"
+        android:layout_below="@id/zip"
+        android:layout_toRightOf="@id/year"
+        android:layout_toEndOf="@id/year"
+        android:inputType="time" />
+    <EditText
+        android:id="@+id/minute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Min"
+        android:layout_below="@id/zip"
+        android:layout_toRightOf="@id/hour"
+        android:layout_toEndOf="@id/hour"
+        android:inputType="time" />
     <Button
         android:id="@+id/getFriendsListButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create"
-        android:layout_below="@+id/date"
+        android:layout_below="@+id/minute"
         android:layout_alignRight="@+id/zip"
         android:layout_alignEnd="@+id/zip" />
 

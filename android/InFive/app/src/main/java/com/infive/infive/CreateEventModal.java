@@ -90,12 +90,16 @@ public class CreateEventModal extends DialogFragment {
         EditText city = (EditText) root.findViewById(R.id.city);
         EditText state = (EditText) root.findViewById(R.id.state);
         EditText zip = (EditText) root.findViewById(R.id.zip);
-        EditText date = (EditText) root.findViewById(R.id.date);
+        EditText month = (EditText) root.findViewById(R.id.month);
+        EditText day = (EditText) root.findViewById(R.id.day);
+        EditText year = (EditText) root.findViewById(R.id.year);
+        EditText hour = (EditText) root.findViewById(R.id.hour);
+        EditText min = (EditText) root.findViewById(R.id.minute);
 
         Bundle args = new Bundle();
         String eventName = eventTitle.getText().toString();
         String fullAddress = address.getText().toString() + ", " + city.getText().toString() + ", " + state.getText().toString() + ", " + zip.getText().toString();
-        String dateTime = date.getText().toString();
+        String dateTime = year.getText().toString()+"-"+month.getText().toString()+"-"+day.getText().toString()+"T"+hour.getText().toString()+":"+min.getText().toString()+"Z";
         args.putString("event", eventName);
         args.putString("location", fullAddress);
         args.putString("when", dateTime);

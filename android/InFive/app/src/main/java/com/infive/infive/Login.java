@@ -95,13 +95,6 @@ public class Login extends ActionBarActivity {
                             e.printStackTrace();
                         }
                         try {
-                            responseText = new JSONObject(new String(response)).getString("response");
-                            Toast toast = Toast.makeText(Login.this.context, responseText, Toast.LENGTH_LONG);
-                            toast.show();
-                        } catch (JSONException j) {
-
-                        }
-                        try {
                             ApiHelper.saveAuthorizationToken(context,
                                     returnVal.getString("token"));
                         } catch (JSONException e) {
@@ -121,7 +114,6 @@ public class Login extends ActionBarActivity {
                             responseText = new JSONObject(new String(errorResponse)).getString("reason");
                             Toast toast = Toast.makeText(getApplicationContext(), responseText, Toast.LENGTH_LONG);
                             toast.show();
-//                            }
                         } catch (JSONException j) {
 
                         }
